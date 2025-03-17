@@ -1,0 +1,44 @@
+package com.user.service.entities;
+
+public class Solution {
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        System.out.println(solution.solution(10000, 10000, 10000, 100));
+        System.out.println(solution.solution("123456"));
+    }
+    public String solution(int l, int w, int h, int m) {
+        boolean isLarge = (l >= 10000 || w >= 10000 || h >= 10000) || ((long) l * w * h >= 1000000000);
+        boolean isBig = m >= 100;
+
+        if (isLarge && isBig) {
+            return "Both";
+        } else if (isLarge) {
+            return "Large";
+        } else if (isBig) {
+            return "Big";
+        } else { 
+            return "Neither";
+        }
+    }
+
+    public String solution(String s) {
+        String maxEven = "";
+        
+        for (int i = 0; i < s.length(); i++) {
+            for (int j = i + 1; j <= s.length(); j++) {
+                String sub = s.substring(i, j);
+                if (isEvenNumber(sub)) {
+                    if (maxEven.isEmpty() || Long.parseLong(sub) > Long.parseLong(maxEven)) {
+                        maxEven = sub;
+                    }
+                }
+            }
+        }    
+        return maxEven;
+    }
+
+    private static boolean isEvenNumber(String num) {
+        return !num.isEmpty() && (num.charAt(num.length() - 1) - '0') % 2 == 0;
+    }
+
+}
