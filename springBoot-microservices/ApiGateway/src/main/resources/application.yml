@@ -1,0 +1,44 @@
+server:
+  port: 8181
+
+spring:
+  application:
+    name: API-GATEWAY
+
+  cloud:
+    gateway:
+      routes:
+      - id: USER-SERVICE
+        uri: lb://USER-SERVICE
+        predicates:
+        - Path=/api/v1/users/**
+        # filters:
+        # - StripPrefix=1
+
+      - id: RATING-SERVICE
+        uri: lb://RATING-SERVICE
+        predicates:
+        - Path=/api/v1/ratings/**
+
+      - id: HOTEL-SERVICE
+        uri: lb://HOTEL-SERVICE
+        predicates:
+        - Path=/api/v1/hotels/**
+
+eureka:
+  instance:
+    prefer-ip-address: true
+
+  client:
+    register-With-Eureka: true
+    fetch-Registry: true
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+
+logging:
+  level:
+    io.netty: DEBUG
+
+java:
+  library:
+    path: /var/folders/yw/70hg5_c55cx978g1vdsp5nxm0000gn/T

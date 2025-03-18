@@ -21,6 +21,7 @@ import com.user.service.entities.Hotel;
 import com.user.service.entities.Rating;
 import com.user.service.entities.User;
 import com.user.service.external.services.HotelService;
+import com.user.service.external.services.RatingService;
 import com.user.service.services.impl.UserServiceImpl;
 
 @RestController
@@ -36,6 +37,9 @@ public class UserController {
     @Autowired
     private HotelService hotelService;
 
+    @Autowired
+    private RatingService ratingService;
+
     @PostMapping
     public ResponseEntity<User> createUser(@RequestBody User user) {
         var _user = userService.saveUser(user);
@@ -46,7 +50,8 @@ public class UserController {
     public ResponseEntity<User> getUserById(@PathVariable String id) {
         var user = userService.getUserById(id);
         // Get ratings from rating service
-        Rating[] ratingsOfUser = restTemplate.getForObject("http://RATING-SERVICE/api/v1/ratings/user/" + id, Rating[].class);
+        // Rating[] ratingsOfUser = restTemplate.getForObject("http://RATING-SERVICE/api/v1/ratings/user/" + id, Rating[].class);
+        Rating[] ratingsOfUser = ratingService.getRatingsByUser(id);
         List<Rating> ratings = Arrays.stream(ratingsOfUser).toList();
         // for (Rating rating : ratings) {
         //     ResponseEntity<Hotel> resp = restTemplate.getForEntity("http://localhost:8282/api/v1/hotels/" + rating.getHotelId(), Hotel.class);
@@ -75,7 +80,7 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/all")
+    @GetMapping
     public ResponseEntity<List<User>> getUsers() {
         var users = userService.getUsers();
         return ResponseEntity.ok(users);
