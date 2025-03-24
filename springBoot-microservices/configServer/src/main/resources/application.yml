@@ -1,17 +1,16 @@
 server:
-  port: 8383
+  port: 8888
 
 spring:
-  data:
-    mongodb:
-      uri: mongodb://localhost:27017
-      database: microservices
-
   application:
-    name: rating-service
+    name: CONFIG-SERVER
 
-  config:
-    import: configserver:http://localhost:8888
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/Akash149/microservice-config
+          clone-on-start: true
 
 # eureka:
 #   instance:

@@ -24,6 +24,9 @@ import com.user.service.external.services.HotelService;
 import com.user.service.external.services.RatingService;
 import com.user.service.services.impl.UserServiceImpl;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+// import io.github.resilience4j.retry.annotation.Retry;
+
 @RestController
 @RequestMapping("/api/v1/users")
 public class UserController {
@@ -46,9 +49,15 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(_user);
     }
 
+    // int retryCount = 0;
+
     @GetMapping("/{id}")
+    @CircuitBreaker(name = "ratingHotelBreaker", fallbackMethod = "ratingHotelFallback")
+    // @Retry(name = "ratingHotelRetry", fallbackMethod = "ratingHotelFallback")
     public ResponseEntity<User> getUserById(@PathVariable String id) {
         var user = userService.getUserById(id);
+        // retryCount++;
+        // System.out.println("Retry count: " + retryCount);
         // Get ratings from rating service
         // Rating[] ratingsOfUser = restTemplate.getForObject("http://RATING-SERVICE/api/v1/ratings/user/" + id, Rating[].class);
         Rating[] ratingsOfUser = ratingService.getRatingsByUser(id);
@@ -65,6 +74,14 @@ public class UserController {
             return rating;
         }).collect(Collectors.toList());
         user.setRatings(ratingList);
+        return ResponseEntity.ok(user);
+    }
+
+    // Fallback method for ratingHotelBreaker
+    public ResponseEntity<User> ratingHotelFallback(String id, Exception ex) {
+        System.out.println("Fallback method called, because of: " + ex.getMessage());
+        User user = User.builder().name("Dummy").id("23432")
+        .email("Dummy23@gmail.com").build();
         return ResponseEntity.ok(user);
     }
 
