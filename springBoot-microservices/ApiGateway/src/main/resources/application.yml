@@ -35,6 +35,14 @@ eureka:
     serviceUrl:
       defaultZone: http://localhost:8761/eureka
 
+okta:
+  oauth2:
+    issuer: https://dev-57853348.okta.com/oauth2/default
+    audience: api://default
+    client-id: 0oanze7mkce7PWc2P5d7
+    client-secret: T78xDC5BA5k59bPtTpUgZRVw5eQUf1iZTNyP2HpNdYBCwkyYUu-fOmN8rx1LH4Kt
+    scope: openid, profile, email, offline_access
+
 logging:
   level:
     io.netty: DEBUG

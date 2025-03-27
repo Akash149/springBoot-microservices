@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,21 +30,27 @@ public class RatingController {
         return ResponseEntity.ok(ratingService.getAllRatings());
     }
 
+    
+    @PreAuthorize("hasAuthority('Admin') || hasAuthority('SCOPE_internal')")
     @GetMapping("/{id}")
     public ResponseEntity<Rating> getRating(@PathVariable String id) {
         return ResponseEntity.ok(ratingService.getRating(id));
     }
 
+    @PreAuthorize("hasAuthority('Admin')")
     @PostMapping
     public ResponseEntity<Rating> createRating(@RequestBody Rating rating) {
         return ResponseEntity.status(HttpStatus.CREATED).body(ratingService.createRating(rating));
     }
 
+    @PreAuthorize("hasAuthority('Admin') || hasAuthority('SCOPE_internal')")
     @PutMapping
     public ResponseEntity<Rating> updateRating(@RequestBody Rating rating) {
         return ResponseEntity.ok(ratingService.updateRating(rating));
     }
 
+    @PreAuthorize("hasAuthority('Admin')")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteRating(@PathVariable String id) {
         ratingService.deleteRating(id);
         return ResponseEntity.ok().build();
@@ -53,6 +61,7 @@ public class RatingController {
         return ResponseEntity.ok(ratingService.getRatingsByHotelId(hotelId));
     }
 
+    @PreAuthorize("hasAuthority('Admin') || hasAuthority('SCOPE_internal')")
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<Rating>> getRatingsByUserId(@PathVariable String userId) {
         return ResponseEntity.ok(ratingService.getRatingsByUserId(userId));

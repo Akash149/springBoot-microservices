@@ -22,6 +22,24 @@ spring:
   config:
     import: configserver:http://localhost:8888
 
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://dev-57853348.okta.com/oauth2/default
+        client:
+          registration:
+            my-internal-client:
+              provider: okta
+              authorization-grant-type: client_credentials
+              scope: internal
+              client-id: 0oanze7mkce7PWc2P5d7
+              client-secret: T78xDC5BA5k59bPtTpUgZRVw5eQUf1iZTNyP2HpNdYBCwkyYUu-fOmN8rx1LH4Kt
+
+          provider:
+            okta:
+              issuer-uri: https://dev-57853348.okta.com/oauth2/default
+
 logging:
   level:
     org:
@@ -67,12 +85,28 @@ Resiliance4j:
         - java.io.IOException
         - java.util.concurrent.TimeoutException
 
-# eureka:
-#   instance:
-#     prefer-ip-address: true
+  rateLimiter:
+    instances:
+      userRateLimiter:
+        limit-for-period: 2
+        limit-refresh-period: 4s
+        timeout-duration: 0s
 
-#   client:
-#     register-With-Eureka: true
-#     fetch-Registry: true
-#     serviceUrl:
-#       defaultZone: http://localhost:8761/eureka
+okta:
+  oauth2:
+    issuer: https://dev-57853348.okta.com/oauth2/default
+    audience: api://default
+    # client-id: 0oanze7mkce7PWc2P5d7
+    # client-secret: T78xDC5BA5k59bPtTpUgZRVw5eQUf1iZTNyP2HpNdYBCwkyYUu-fOmN8rx1LH4Kt
+    # scope: openid, profile, email, offline_access
+
+
+    # eureka:
+    #   instance:
+    #     prefer-ip-address: true
+
+    #   client:
+    #     register-With-Eureka: true
+    #     fetch-Registry: true
+    #     serviceUrl:
+    #       defaultZone: http://localhost:8761/eureka
